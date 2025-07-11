@@ -1,0 +1,42 @@
+<!-- templates/admin/edit_participant.html (YENİ DOSYA) -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katılımcı Düzenle - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Sidebar içeriği aynı kalabilir -->
+        <div class="sidebar-header">
+            <img src="{{ url_for('static', filename='images/belbim_logo.png') }}" alt="BELBİM Logo" class="logo">
+            <h3>Yönetim Paneli</h3>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin_dashboard') }}">Gösterge Paneli</a></li>
+            <li><a href="{{ url_for('upload_participants') }}">Yeni Çekiliş</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('admin_logout') }}">Güvenli Çıkış</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>Katılımcıyı Düzenle</h1>
+
+        <div class="content-box">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="name">Katılımcı Adı:</label>
+                    <!-- 'value' ile mevcut ismi forma yazdırıyoruz -->
+                    <input type="text" id="name" name="name" value="{{ participant.name }}" required>
+                </div>
+                <button type="submit" class="btn-submit">Değişiklikleri Kaydet</button>
+                <a href="{{ url_for('view_participants', raffle_id=participant.raffle_id) }}" class="btn" style="background-color: #6c757d; margin-left: 10px;">İptal</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
