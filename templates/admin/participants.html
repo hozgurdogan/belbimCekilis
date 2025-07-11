@@ -1,0 +1,49 @@
+<!-- templates/admin/participants.html (YENİ DOSYA) -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>"{{ raffle.name }}" Katılımcıları - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="{{ url_for('static', filename='images/belbim_logo.png') }}" alt="BELBİM Logo" class="logo">
+            <h3>Yönetim Paneli</h3>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin_dashboard') }}">Gösterge Paneli</a></li>
+            <li><a href="{{ url_for('upload_participants') }}">Yeni Çekiliş</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('admin_logout') }}">Güvenli Çıkış</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>"{{ raffle.name }}" Çekilişi</h1>
+        
+        <div class="content-box">
+            <div class="content-header">
+                <h2>Katılımcı Listesi ({{ participants | length }} kişi)</h2>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn">Panele Dön</a>
+            </div>
+
+            {% if participants %}
+                <!-- Kazanan listesi için olan stili burada da kullanıyoruz -->
+                <ul class="winner-list">
+                    {% for participant in participants %}
+                        <li>{{ participant.name }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Bu çekilişe henüz katılımcı eklenmemiş veya bir hata oluştu.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

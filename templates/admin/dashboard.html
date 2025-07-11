@@ -1,0 +1,92 @@
+<!-- templates/admin/dashboard.html -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - BELBİM Çekiliş</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="{{ url_for('static', filename='images/belbim_logo.png') }}" alt="BELBİM Logo" class="logo">
+            <h3>Yönetim Paneli</h3>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin_dashboard') }}" class="active">Gösterge Paneli</a></li>
+            <li><a href="{{ url_for('upload_participants') }}">Yeni Çekiliş</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('admin_logout') }}">Güvenli Çıkış</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>Gösterge Paneli</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="stats-container">
+            <div class="stat-box raffles"><div class="stat-title">Toplam Çekiliş</div><p class="stat-number">{{ stats.total_raffles }}</p></div>
+            <div class="stat-box participants"><div class="stat-title">Toplam Katılımcı</div><p class="stat-number">{{ stats.total_participants }}</p></div>
+            <div class="stat-box winners"><div class="stat-title">Toplam Kazanan</div><p class="stat-number">{{ stats.total_winners }}</p></div>
+            <div class="stat-box pending"><div class="stat-title">Bekleyen Çekiliş</div><p class="stat-number">{{ stats.pending_raffles }}</p></div>
+        </div>
+        
+        <div class="content-box">
+            <div class="content-header">
+                <h2>Son Çekilişler</h2>
+                <a href="{{ url_for('upload_participants') }}" class="btn">Yeni Çekiliş Ekle</a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Durum</th><th>Çekiliş Adı</th><th>Katılımcı</th><th>Kazanacak</th><th>Tarih</th><th>Aksiyonlar</th>
+                    </tr>
+                </thead>
+                    <tbody>
+                        {% for raffle in raffles %}
+                        <tr>
+                            <td>
+                                {% if raffle.status == 'Yapıldı' %}<span class="status done">Yapıldı</span>
+                                {% else %}<span class="status waiting">Bekliyor</span>{% endif %}
+                            </td>
+                            <td>{{ raffle.name }}</td>
+                            <td>{{ raffle.participant_count }} kişi</td>
+                            <td>{{ raffle.num_winners }} kişi</td>
+                            <td>{{ raffle.draw_date }}</td>
+                            <td class="actions">
+                                {% if raffle.status == 'Bekliyor' %}
+                                    <a href="{{ url_for('draw_raffle', raffle_id=raffle.id) }}" class="btn-draw">Çek</a>
+                                    <!-- YENİ: Durum "Bekliyor" ise katılımcıları gösteren sayfaya git -->
+                                    <a href="{{ url_for('view_participants', raffle_id=raffle.id) }}" class="btn-view">Katılımcılar</a>
+                                {% else %}
+                                    <!-- YENİ: Durum "Yapıldı" ise sonuçları gösteren sayfaya git -->
+                                    <a href="{{ url_for('view_results', raffle_id=raffle.id) }}" class="btn-view">Sonuçlar</a>
+                                {% endif %}
+                                
+                                <form action="{{ url_for('delete_raffle', raffle_id=raffle.id) }}" method="POST" onsubmit="return confirm('Bu çekiliş ve tüm verilerini kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!');">
+                                    <button type="submit" class="btn-delete">Sil</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6" style="text-align: center; padding: 30px;">Henüz hiç çekiliş oluşturulmadı.</td></tr>
+                        {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
