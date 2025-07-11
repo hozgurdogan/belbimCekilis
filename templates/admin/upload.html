@@ -23,39 +23,32 @@
             <a href="{{ url_for('admin_logout') }}">Güvenli Çıkış</a>
         </div>
     </div>
-
-    <div class="main-content">
-        <h1>Yeni Çekiliş Oluştur ve Katılımcıları Yükle</h1>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <div class="content-box">
-            <form method="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="raffle_name">Çekiliş Adı:</label>
-                    <input type="text" id="raffle_name" name="raffle_name" required>
-                </div>
-                <div class="form-group">
-                    <label for="num_winners">Kazanacak Kişi Sayısı:</label>
-                    <input type="number" id="num_winners" name="num_winners" min="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="csv_file">Katılımcı CSV Dosyası:</label>
-                    <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
-                    <small>Lütfen katılımcı isimlerinin olduğu sütun başlığının <strong>'ad_soyad'</strong> olduğundan emin olun.</small>
-                </div>
-                <button type="submit" class="btn-submit">Oluştur ve Yükle</button>
-            </form>
-        </div>
+<div class="main-content">
+    <h1>Yeni Çekiliş Oluştur ve Katılımcıları Yükle</h1>
+    <!-- ... (flash mesajlar kısmı aynı) ... -->
+    <div class="content-box">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="raffle_name">Çekiliş Adı:</label>
+                <input type="text" id="raffle_name" name="raffle_name" required>
+            </div>
+            <!-- YENİ: Zamanlama alanı eklendi -->
+            <div class="form-group">
+                <label for="scheduled_time">Çekilişin Yapılacağı Tarih ve Saat:</label>
+                <input type="datetime-local" id="scheduled_time" name="scheduled_time" required>
+            </div>
+            <div class="form-group">
+                <label for="num_winners">Kazanacak Kişi Sayısı:</label>
+                <input type="number" id="num_winners" name="num_winners" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="csv_file">Katılımcı CSV Dosyası:</label>
+                <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+                <small>Lütfen katılımcı isimlerinin olduğu sütun başlığının <strong>'ad_soyad'</strong> olduğundan emin olun.</small>
+            </div>
+            <button type="submit" class="btn-submit">Oluştur ve Zamanla</button>
+        </form>
     </div>
-
+</div>
 </body>
 </html>

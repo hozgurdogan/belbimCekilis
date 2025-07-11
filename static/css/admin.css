@@ -1,5 +1,8 @@
-/* static/css/admin.css */
+/* ================================================== */
+/* ===         ÇEKİLİŞ UYGULAMASI ADMIN CSS       === */
+/* ================================================== */
 
+/* --- TEMEL DEĞİŞKENLER (Renk Paleti) --- */
 :root {
     --primary-color: #0d6efd;
     --primary-hover: #0b5ed7;
@@ -16,13 +19,14 @@
     --sidebar-bg: #212529;
     --sidebar-text: rgba(255, 255, 255, 0.75);
     --sidebar-hover-bg: #343a40;
-    --sidebar-active-bg: #0d6efd;
+    --sidebar-active-bg: var(--primary-color);
 }
 
+/* --- GENEL SAYFA YAPISI --- */
 body {
     background-color: var(--light-bg);
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
     display: flex;
 }
 
@@ -38,6 +42,7 @@ body {
     display: flex;
     flex-direction: column;
     padding-top: 20px;
+    z-index: 100;
 }
 .sidebar-header {
     padding: 0 20px 20px 20px;
@@ -70,33 +75,36 @@ body {
 
 /* --- FLASH MESAJLARI --- */
 .flash-messages { margin-bottom: 20px; }
-.alert { padding: 15px; border-radius: 5px; border: 1px solid transparent; }
+.alert { padding: 1rem; border-radius: 0.375rem; border: 1px solid transparent; }
 .alert-success { color: #0f5132; background-color: #d1e7dd; border-color: #badbcc; }
 .alert-danger { color: #842029; background-color: #f8d7da; border-color: #f5c2c7; }
 .alert-info { color: #055160; background-color: #cff4fc; border-color: #b6effb; }
 .alert-warning { color: #664d03; background-color: #fff3cd; border-color: #ffecb5; }
 
-/* --- İSTATİSTİK KUTULARI --- */
+/* --- İSTATİSTİK KUTULARI (DASHBOARD) --- */
 .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
 .stat-box { background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-left: 5px solid; }
-.stat-box .stat-title { font-size: 0.95em; color: var(--secondary-color); text-transform: uppercase; font-weight: 600; }
+.stat-box .stat-title { font-size: 0.9em; color: var(--secondary-color); text-transform: uppercase; font-weight: 600; }
 .stat-box .stat-number { font-size: 2.5em; font-weight: 700; color: var(--dark-text); margin: 5px 0 0 0; }
 .stat-box.raffles { border-color: var(--primary-color); }
 .stat-box.participants { border-color: var(--success-color); }
 .stat-box.winners { border-color: var(--warning-color); }
 .stat-box.pending { border-color: var(--danger-color); }
 
-/* --- TABLO & FORM ALANI --- */
+/* --- İÇERİK KUTULARI (TABLO, FORM) --- */
 .content-box { background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .content-header h2 { margin: 0; font-size: 1.5em; }
-.content-header .btn { background-color: var(--primary-color); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: 500; }
+.content-header .btn-new-raffle { background-color: var(--primary-color); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: 500; transition: background-color 0.2s; }
+.content-header .btn-new-raffle:hover { background-color: var(--primary-hover); }
+
+/* --- TABLO STİLLERİ --- */
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
-th { font-weight: 600; color: #495057; }
+th { font-weight: 600; color: #495057; font-size: 0.9em; text-transform: uppercase; }
 tbody tr:hover { background-color: #f1f3f5; }
 
-/* --- FORM ELEMENTLERİ (upload.html için) --- */
+/* --- FORM ELEMENTLERİ (upload.html) --- */
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #495057; }
 .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px; box-sizing: border-box; }
@@ -104,19 +112,98 @@ tbody tr:hover { background-color: #f1f3f5; }
 .btn-submit { background-color: var(--success-color); color: white; padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; transition: background-color 0.2s; }
 .btn-submit:hover { background-color: var(--success-hover); }
 
-/* --- DURUM ETİKETLERİ VE AKSİYON BUTONLARI --- */
-.status { padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 0.8em; text-align: center; display: inline-block; }
-.status.done { background-color: #d1e7dd; color: var(--success-color); }
-.status.waiting { background-color: #fff3cd; color: #664d03; }
-.actions a, .actions button { display: inline-block; padding: 5px 10px; margin: 2px; border-radius: 5px; text-decoration: none; color: white; border: none; cursor: pointer; font-size: 0.85em; transition: background-color 0.2s; }
-.actions .btn-draw { background-color: var(--success-color); }
-.actions .btn-draw:hover { background-color: var(--success-hover); }
-.actions .btn-view { background-color: var(--primary-color); }
-.actions .btn-view:hover { background-color: var(--primary-hover); }
-.actions .btn-delete { background-color: var(--danger-color); }
-.actions .btn-delete:hover { background-color: var(--danger-hover); }
-.actions form { display: inline; margin: 0; padding: 0; }
+/* --- DURUM ETİKETLERİ --- */
+.badge { display: inline-block; padding: .35em .65em; font-size: .75em; font-weight: 700; line-height: 1; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem; }
+.bg-success { background-color: #d1e7dd; color: #0f5132; }
+.bg-info { background-color: #cff4fc; color: #055160; }
+.bg-warning { background-color: #fff3cd; color: #664d03; }
 
-/* --- SONUÇLAR SAYFASI İÇİN EK STİLLER --- */
-.winner-list { list-style: none; padding: 0; margin-top: 20px; column-count: 2; column-gap: 20px; }
-.winner-list li { background-color: #e9ecef; border-left: 4px solid var(--primary-color); padding: 12px 15px; margin-bottom: 10px; border-radius: 4px; font-size: 1.1em; font-weight: 500; }
+/* ======================================================= */
+/* ===   YENİ VE GELİŞTİRİLMİŞ BUTON SİSTEMİ (BTN)   === */
+/* ======================================================= */
+
+/* Genel Buton Stili */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    margin: 0 4px; /* Butonlar arasına boşluk */
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    font-size: 0.88em;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    vertical-align: middle;
+}
+
+/* Buton İkonları İçin Stil */
+.btn i {
+    margin-right: 6px;
+}
+/* Sadece ikon olan butonlar için (örn: sil) */
+.btn i:only-child {
+    margin-right: 0;
+}
+
+/* Buton Renk Sınıfları */
+.btn-primary { background-color: var(--primary-color); }
+.btn-primary:hover { background-color: var(--primary-hover); }
+
+.btn-secondary { background-color: var(--secondary-color); }
+.btn-secondary:hover { background-color: var(--secondary-hover); }
+
+.btn-success { background-color: var(--success-color); }
+.btn-success:hover { background-color: var(--success-hover); }
+
+.btn-danger { background-color: var(--danger-color); }
+.btn-danger:hover { background-color: var(--danger-hover); }
+
+.btn-warning { background-color: var(--warning-color); color: var(--dark-text); }
+.btn-warning:hover { background-color: #ffca2c; }
+
+/* Tablo içindeki Aksiyonlar hücresi */
+td.actions {
+    white-space: nowrap; /* Butonların alt satıra kaymasını engelle */
+    text-align: right;   /* Butonları sağa yasla */
+}
+/* Silme formu için */
+td.actions form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+
+/* ======================================================= */
+/* ===   YENİ KATILIMCI EKLEME FORMU İÇİN STİLLER    === */
+/* ======================================================= */
+
+.add-participant-form {
+    padding: 20px 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.form-inline {
+    display: flex;
+    gap: 10px; /* Input ve buton arasına boşluk */
+}
+
+.form-inline .form-input {
+    flex-grow: 1; /* Input'un mevcut tüm boşluğu kaplamasını sağla */
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.form-inline .btn {
+    white-space: nowrap; /* "Ekle" yazısının alta kaymasını engelle */
+}
+
+.btn-info { background-color: #0dcaf0; }
+.btn-info:hover { background-color: #31d2f2; }

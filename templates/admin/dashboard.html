@@ -1,15 +1,17 @@
-<!-- templates/admin/dashboard.html -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Paneli - BELBİM Çekiliş</title>
+    <!-- CSS ve İkon Kütüphanesi -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     
     <div class="sidebar">
+        <!-- Sidebar İçeriği -->
         <div class="sidebar-header">
             <img src="{{ url_for('static', filename='images/belbim_logo.png') }}" alt="BELBİM Logo" class="logo">
             <h3>Yönetim Paneli</h3>
@@ -26,6 +28,7 @@
     <div class="main-content">
         <h1>Gösterge Paneli</h1>
 
+        <!-- Flash Mesajları -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="flash-messages">
@@ -36,6 +39,7 @@
             {% endif %}
         {% endwith %}
 
+        <!-- İstatistik Kutuları -->
         <div class="stats-container">
             <div class="stat-box raffles"><div class="stat-title">Toplam Çekiliş</div><p class="stat-number">{{ stats.total_raffles }}</p></div>
             <div class="stat-box participants"><div class="stat-title">Toplam Katılımcı</div><p class="stat-number">{{ stats.total_participants }}</p></div>
@@ -43,47 +47,90 @@
             <div class="stat-box pending"><div class="stat-title">Bekleyen Çekiliş</div><p class="stat-number">{{ stats.pending_raffles }}</p></div>
         </div>
         
+        <!-- Son Çekilişler Tablosu -->
         <div class="content-box">
             <div class="content-header">
                 <h2>Son Çekilişler</h2>
-                <a href="{{ url_for('upload_participants') }}" class="btn">Yeni Çekiliş Ekle</a>
+                <a href="{{ url_for('upload_participants') }}" class="btn-new-raffle">Yeni Çekiliş Ekle</a>
             </div>
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
-                        <th>Durum</th><th>Çekiliş Adı</th><th>Katılımcı</th><th>Kazanacak</th><th>Tarih</th><th>Aksiyonlar</th>
+                        <th>Çekiliş Adı</th>
+                        <th>Katılımcı</th>
+                        <th>Kazanacak</th>
+                        <th>Çekiliş Zamanı</th>
+                        <th>Durum</th>
+                        <th class="text-end">Aksiyonlar</th>
                     </tr>
                 </thead>
-                    <tbody>
-                        {% for raffle in raffles %}
-                        <tr>
-                            <td>
-                                {% if raffle.status == 'Yapıldı' %}<span class="status done">Yapıldı</span>
-                                {% else %}<span class="status waiting">Bekliyor</span>{% endif %}
-                            </td>
-                            <td>{{ raffle.name }}</td>
-                            <td>{{ raffle.participant_count }} kişi</td>
-                            <td>{{ raffle.num_winners }} kişi</td>
-                            <td>{{ raffle.draw_date }}</td>
-                            <td class="actions">
-                                {% if raffle.status == 'Bekliyor' %}
-                                    <a href="{{ url_for('draw_raffle', raffle_id=raffle.id) }}" class="btn-draw">Çek</a>
-                                    <!-- YENİ: Durum "Bekliyor" ise katılımcıları gösteren sayfaya git -->
-                                    <a href="{{ url_for('view_participants', raffle_id=raffle.id) }}" class="btn-view">Katılımcılar</a>
-                                {% else %}
-                                    <!-- YENİ: Durum "Yapıldı" ise sonuçları gösteren sayfaya git -->
-                                    <a href="{{ url_for('view_results', raffle_id=raffle.id) }}" class="btn-view">Sonuçlar</a>
-                                {% endif %}
-                                
-                                <form action="{{ url_for('delete_raffle', raffle_id=raffle.id) }}" method="POST" onsubmit="return confirm('Bu çekiliş ve tüm verilerini kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!');">
-                                    <button type="submit" class="btn-delete">Sil</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr><td colspan="6" style="text-align: center; padding: 30px;">Henüz hiç çekiliş oluşturulmadı.</td></tr>
-                        {% endfor %}
-                    </tbody>
+                <tbody>
+                    {% for raffle in raffles %}
+                    <tr>
+                        <td>{{ raffle.name }}</td>
+                        <td>{{ raffle.participant_count }}</td>
+                        <td>{{ raffle.num_winners }}</td>
+                        <td>{{ raffle.scheduled_draw_time }}</td>
+                        <td>
+                            {% if raffle.status == 'Yapıldı' %}
+                                <span class="badge bg-success">{{ raffle.status }}</span>
+                            {% elif raffle.status == 'Zamanlandı' %}
+                                <span class="badge bg-info">{{ raffle.status }}</span>
+                            {% else %}
+                                <span class="badge bg-warning">{{ raffle.status }}</span>
+                            {% endif %}
+                        </td>
+                        
+                        <!-- ============================================== -->
+                        <!-- === YENİ VE AKILLI AKSİYON BUTONLARI BAŞLANGIÇ === -->
+                        <!-- ============================================== -->
+                        <td class="actions">
+                            <!-- Katılımcıları listeleme butonu (Her zaman görünür) -->
+                            <a href="{{ url_for('view_participants', raffle_id=raffle.id) }}" class="btn btn-primary" title="Katılımcıları Görüntüle">
+                                <i class="fas fa-users"></i>
+                            </a>
+
+                            <!-- === DURUMA GÖRE GÖRÜNECEK BUTONLAR === -->
+                            
+                            <!-- 1. Çekiliş YAPILDIYSA: Sonuçları gör butonu -->
+                            {% if raffle.status == 'Yapıldı' %}
+                                <a href="{{ url_for('view_results', raffle_id=raffle.id) }}" class="btn btn-secondary" title="Sonuçları Gör">
+                                    <i class="fas fa-trophy"></i>
+                                </a>
+                            
+                            <!-- 2. Çekiliş ZAMANLANDIYSA: "Şimdi Çek" butonu -->
+                            {% elif raffle.status == 'Zamanlandı' %}
+                                <a href="{{ url_for('draw_raffle', raffle_id=raffle.id, force='true') }}" 
+                                   class="btn btn-info" 
+                                   title="Şimdi Çek"
+                                   onclick="return confirm('Bu çekilişin zamanı henüz gelmedi. Yine de şimdi çekmek istediğinizden emin misiniz?');">
+                                    <i class="fas fa-bolt"></i>
+                                </a>
+                            
+                            <!-- 3. Çekilişin ZAMANI GEÇTİYSE: Normal "Çekilişi Yap" butonu -->
+                            {% elif raffle.status == 'Zamanı Geçti' %}
+                                <a href="{{ url_for('draw_raffle', raffle_id=raffle.id) }}" class="btn btn-success" title="Çekilişi Yap">
+                                    <i class="fas fa-play-circle"></i>
+                                </a>
+                            {% endif %}
+
+                            <!-- Çekilişi Silme Butonu (Her zaman görünür) -->
+                            <form action="{{ url_for('delete_raffle', raffle_id=raffle.id) }}" method="POST" onsubmit="return confirm('Bu çekilişi ve tüm verilerini kalıcı olarak silmek istediğinizden emin misiniz?');">
+                                <button type="submit" class="btn btn-danger" title="Çekilişi Sil">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                        <!-- ============================================ -->
+                        <!-- === YENİ VE AKILLI AKSİYON BUTONLARI BİTİŞ === -->
+                        <!-- ============================================ -->
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Henüz oluşturulmuş bir çekiliş yok.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
